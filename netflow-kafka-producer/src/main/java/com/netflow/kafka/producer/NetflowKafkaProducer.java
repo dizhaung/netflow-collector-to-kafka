@@ -58,6 +58,8 @@ public class NetflowKafkaProducer {
             String messageData = objectMapper.writeValueAsString(netflowBean);
             ProducerRecord<String,String> record = new ProducerRecord<>(TOPIC, String.valueOf(System.nanoTime()).toString(), messageData);
 
+            LOGGER.info("Sending netflow to Kafka......");
+
             producerCallback.send(record,
                    (metadata, e) -> {
                        if(e != null){
@@ -67,7 +69,7 @@ public class NetflowKafkaProducer {
                    });
 
         } catch (Exception e) {
-             e.printStackTrace();
+            LOGGER.error("Error sending netflow to kafka",e);
         }
 
         //producerCallback.close();
