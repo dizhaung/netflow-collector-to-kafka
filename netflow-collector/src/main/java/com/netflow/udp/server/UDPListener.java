@@ -6,6 +6,8 @@ import com.netflow.bean.V5.NetFlowV5Parser;
 import com.netflow.bean.V9.*;
 import com.netflow.bean.kafka.NetflowBean;
 import com.netflow.kafka.producer.NetflowKafkaProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,8 @@ import java.util.Map;
 @Component
 public class UDPListener extends Thread{
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UDPListener.class);
+
     @Value("${server.udp_port}")
     int udpPort;
 
@@ -45,6 +49,7 @@ public class UDPListener extends Thread{
         try {
             InetAddress udpServerAddress = InetAddress.getByName(udpAddress);
             socket = new DatagramSocket(udpPort,udpServerAddress);
+            LOGGER.info("UDP Server Up and Running.....");
             run();
         } catch (SocketException e) {
             e.printStackTrace();
@@ -133,21 +138,19 @@ public class UDPListener extends Thread{
         NetFlowV5Header header = packet.getHeader();
         Date date = Date.from( Instant.ofEpochSecond( header.getUnixSecs() ) );
 
-
         Map<String, Object> records = packet.getRecords().get(0).toMap();
-        System.out.println("################## NETFLOW V5 #######################");
-        System.out.println("Netflow Version: V" + header.getVersion());
-        System.out.println("Destination address: " + records.get("dst_addr"));
-        System.out.println("Destination Port: " + records.get("dst_port"));
-        System.out.println("Source address: " + records.get("src_addr"));
-        System.out.println("Source Port: " + records.get("src_port"));
-        System.out.println("Protocol: " + records.get("protocol"));
-        System.out.println("Size: " + records.get("packet_count"));
-        System.out.println("Date: " + date.toString());
-        System.out.println("Next Hop: " + records.get("next_hop"));
-        System.out.println("Tos: " + records.get("tos"));
-        System.out.println(" ");
-
+        LOGGER.info("################## NETFLOW V5 #######################");
+        LOGGER.info("Netflow Version: V" + header.getVersion());
+        LOGGER.info("Destination address: " + records.get("dst_addr"));
+        LOGGER.info("Destination Port: " + records.get("dst_port"));
+        LOGGER.info("Source address: " + records.get("src_addr"));
+        LOGGER.info("Source Port: " + records.get("src_port"));
+        LOGGER.info("Protocol: " + records.get("protocol"));
+        LOGGER.info("Size: " + records.get("packet_count"));
+        LOGGER.info("Date: " + date.toString());
+        LOGGER.info("Next Hop: " + records.get("next_hop"));
+        LOGGER.info("Tos: " + records.get("tos"));
+        LOGGER.info(" ");
 
         NetflowBean netflowBean = new NetflowBean();
         netflowBean.setDate(date.toString());
@@ -163,6 +166,7 @@ public class UDPListener extends Thread{
 
         netflowKafkaProducer.sendNetflowToKafka(netflowBean);
 
+        LOGGER.info("Netflow sended to Kafka");
     }
 
 
