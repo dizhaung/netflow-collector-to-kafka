@@ -5,7 +5,7 @@ spring:
 server:
   port: 8084
   udp_port: 4445
-  udp_address: 127.0.0.1
+  udp_address: 0.0.0.0
 
 kafka:
   brokers: 10.22.94.57
