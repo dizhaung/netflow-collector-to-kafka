@@ -8,5 +8,5 @@ server:
   udp_address: 10.22.94.57
 
 kafka:
-  brokers: 127.0.0.1
+  brokers: 10.22.94.57
   port: 9092
