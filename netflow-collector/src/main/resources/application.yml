@@ -10,3 +10,18 @@ server:
 kafka:
   brokers: 10.22.94.57
   port: 9092
+
+---
+spring:
+  profiles: container
+  application:
+    name: NetflowCollector
+
+server:
+  port: 8084
+  udp_port: 4445
+  udp_address: 0.0.0.0
+
+kafka:
+  brokers: ${KAFKA_HOSTS}
+  port: 9092
