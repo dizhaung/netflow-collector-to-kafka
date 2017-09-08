@@ -52,7 +52,7 @@ public class UDPListener extends Thread{
             LOGGER.info("UDP Server Up and Running.....");
             run();
         } catch (SocketException e) {
-            e.printStackTrace();
+            LOGGER.error("Error starting UDP Server",e);
         }
     }
 
@@ -64,7 +64,7 @@ public class UDPListener extends Thread{
             try {
                 socket.receive(packet);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("Error socket server receiving package",e);
             }
 
             InetAddress address = packet.getAddress();
