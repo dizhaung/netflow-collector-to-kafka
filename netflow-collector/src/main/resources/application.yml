@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: NetflowCollector
+
+server:
+  port: 8084
+  udp_port: 4445
+  udp_address: 10.22.94.57
+
+kafka:
+  brokers: 127.0.0.1
+  port: 9092
